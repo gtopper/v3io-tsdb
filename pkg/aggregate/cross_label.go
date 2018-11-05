@@ -22,7 +22,7 @@ package aggregate
 
 import (
 	"fmt"
-	"hash/fnv"
+	"github.com/cespare/xxhash"
 	"path"
 	"strconv"
 
@@ -86,7 +86,7 @@ func NewCrossLabelAggregateAppender(logger logger.Logger, conf *config.V3ioConfi
 }
 
 func (c *CrossLabelAggregateAppender) Append(metric string, labels map[string]string, t int64, v float64) {
-	hasher := fnv.New64()
+	hasher := xxhash.New()
 	for _, labelName := range c.labels {
 		labelValue, ok := labels[labelName]
 		if !ok {
