@@ -110,6 +110,8 @@ type V3ioConfig struct {
 	// Don't aggregate from raw chunks, for use when working as a Prometheus
 	// TSDB library
 	DisableClientAggr bool `json:"disableClientAggr,omitempty"`
+	//
+	CrossLabelAggregateAppenderWorkers int `json:"crossLabelAggregateAppenderWorkers,omitempty"`
 }
 
 type MetricsReporterConfig struct {
@@ -132,7 +134,14 @@ type Rollup struct {
 	SampleRetention int `json:"sampleRetention"`
 	// Layer retention time, in months ('m'), days ('d'), or hours ('h').
 	// Format: "[0-9]+[hmd]". For example: "3h", "7d", "1m"
-	LayerRetentionTime string `json:"layerRetentionTime"`
+	LayerRetentionTime string         `json:"layerRetentionTime"`
+	PreAggregates      []PreAggregate `json:"preAggregates"`
+}
+
+type PreAggregate struct {
+	Labels      []string `json:"labels"`
+	Granularity string   `json:"granularity"`
+	Aggregates  []string `json:"aggregates"`
 }
 
 type TableSchema struct {
