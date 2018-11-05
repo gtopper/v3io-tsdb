@@ -24,6 +24,7 @@ package aggregate
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"testing"
 
@@ -35,15 +36,48 @@ import (
 	"github.com/v3io/v3io-go-http"
 )
 
+var expected = []string{
+	`TestCrossLabelAggrSuite/0/0.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/0.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/1.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.26923b3022651de: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.2a1b32a757460405: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[0]+0.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[1]+1.000000e00`,
+	`TestCrossLabelAggrSuite/0/2.af29345201a3ce48: _v_count=if_not_exists(a,init_array(128,'double',0.0)); _v_count[cell]=_v_count[2]+2.000000e00`,
+}
+
 type testCrossLabelAggrSuite struct {
 	suite.Suite
 	logger logger.Logger
 }
 
-type mockItemUpdater struct{}
+type mockItemUpdater struct {
+	requestChan chan string
+	result      []string
+}
 
 func (mip mockItemUpdater) UpdateItem(input *v3io.UpdateItemInput) {
-	fmt.Printf("%s: %s\n", input.Path, *input.Expression)
+	mip.requestChan <- fmt.Sprintf("%s: %s", input.Path, *input.Expression)
 }
 
 func (suite *testCrossLabelAggrSuite) SetupSuite() {
@@ -63,12 +97,20 @@ func (suite *testCrossLabelAggrSuite) TestAppend() {
 		return partition, cell
 	}
 
-	aggrAppender := NewCrossLabelAggregateAppender(suite.logger, conf, mockItemUpdater{}, []string{"label"}, timeFunc)
+	mip := mockItemUpdater{requestChan: make(chan string, 128)}
+	completionChan := make(chan struct{})
+	go func() {
+		for request := range mip.requestChan {
+			mip.result = append(mip.result, request)
+		}
+		close(completionChan)
+	}()
+	aggrAppender := NewCrossLabelAggregateAppender(suite.logger, conf, mip, []string{"label"}, timeFunc)
 
-	for i := 0; i < 10; i++ {
-		for labelValue := 0; labelValue < 10; labelValue++ {
-			for j := 0; j < 10; j++ {
-				labels := map[string]string{"label": string(labelValue), "ignoreThis": "should be ignored"}
+	for i := 0; i < 3; i++ {
+		for labelValue := 0; labelValue < 3; labelValue++ {
+			for j := 0; j < 3; j++ {
+				labels := map[string]string{"label": string(labelValue), "ignoreThis": string(j)}
 				aggrAppender.Append(strconv.Itoa(i), labels, int64(j), float64(j))
 			}
 		}
@@ -76,6 +118,14 @@ func (suite *testCrossLabelAggrSuite) TestAppend() {
 
 	aggrAppender.Terminate()
 	aggrAppender.AwaitTermination()
+
+	close(mip.requestChan)
+
+	<-completionChan
+
+	sort.Strings(mip.result)
+
+	suite.Equal(expected, mip.result)
 }
 
 func TestCrossLabelAggrSuite(t *testing.T) {
