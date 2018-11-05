@@ -44,15 +44,16 @@ const (
 	defaultMinimumChunkSize     = 200     // bytes
 	defaultMaximumChunkSize     = 32000   // bytes
 
-	DefaultShardingBucketsCount   = 8
-	DefaultStorageClass           = "local"
-	DefaultIngestionRate          = ""
-	DefaultAggregates             = "" // no aggregates by default
-	DefaultAggregationGranularity = "1h"
-	DefaultLayerRetentionTime     = "1y"
-	DefaultSampleRetentionTime    = 0
-	DefaultLogLevel               = "info"
-	DefaultVerboseLevel           = "debug"
+	DefaultShardingBucketsCount               = 8
+	DefaultStorageClass                       = "local"
+	DefaultIngestionRate                      = ""
+	DefaultAggregates                         = "" // no aggregates by default
+	DefaultAggregationGranularity             = "1h"
+	DefaultLayerRetentionTime                 = "1y"
+	DefaultSampleRetentionTime                = 0
+	DefaultLogLevel                           = "info"
+	DefaultVerboseLevel                       = "debug"
+	DefaultCrossLabelAggregateAppenderWorkers = 8
 )
 
 var (
@@ -110,7 +111,7 @@ type V3ioConfig struct {
 	// Don't aggregate from raw chunks, for use when working as a Prometheus
 	// TSDB library
 	DisableClientAggr bool `json:"disableClientAggr,omitempty"`
-	//
+	// Number of workers for writing cross-label aggregations
 	CrossLabelAggregateAppenderWorkers int `json:"crossLabelAggregateAppenderWorkers,omitempty"`
 }
 
@@ -317,5 +318,13 @@ func initDefaults(cfg *V3ioConfig) {
 
 	if cfg.ShardingBucketsCount == 0 {
 		cfg.ShardingBucketsCount = DefaultShardingBucketsCount
+	}
+
+	if cfg.ShardingBucketsCount == 0 {
+		cfg.ShardingBucketsCount = DefaultShardingBucketsCount
+	}
+
+	if cfg.CrossLabelAggregateAppenderWorkers == 0 {
+		cfg.CrossLabelAggregateAppenderWorkers = DefaultCrossLabelAggregateAppenderWorkers
 	}
 }

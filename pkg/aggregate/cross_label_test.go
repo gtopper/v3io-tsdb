@@ -55,7 +55,7 @@ func (suite *testCrossLabelAggrSuite) SetupSuite() {
 
 func (suite *testCrossLabelAggrSuite) TestAppend() {
 
-	conf := &config.V3ioConfig{TablePath: "TestCrossLabelAggrSuite", CrossLabelAggregateAppenderWorkers: 1}
+	conf := &config.V3ioConfig{TablePath: "TestCrossLabelAggrSuite", CrossLabelAggregateAppenderWorkers: 8}
 
 	timeFunc := func(t int64) (int64, int) {
 		partition := t / 100
@@ -63,11 +63,14 @@ func (suite *testCrossLabelAggrSuite) TestAppend() {
 		return partition, cell
 	}
 
-	aggrAppender := NewCrossLabelAggregateAppender(suite.logger, conf, mockItemUpdater{}, nil, timeFunc)
+	aggrAppender := NewCrossLabelAggregateAppender(suite.logger, conf, mockItemUpdater{}, []string{"label"}, timeFunc)
 
 	for i := 0; i < 10; i++ {
-		for j := 0; j < 10; j++ {
-			aggrAppender.Append(strconv.Itoa(i), nil, int64(j), float64(j))
+		for labelValue := 0; labelValue < 10; labelValue++ {
+			for j := 0; j < 10; j++ {
+				labels := map[string]string{"label": string(labelValue), "ignoreThis": "should be ignored"}
+				aggrAppender.Append(strconv.Itoa(i), labels, int64(j), float64(j))
+			}
 		}
 	}
 
