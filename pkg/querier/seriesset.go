@@ -21,12 +21,12 @@ such restriction.
 package querier
 
 import (
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/partmgr"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/v3io/v3io-go-http"
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/partmgr"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 // holds the query result set

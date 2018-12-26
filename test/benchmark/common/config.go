@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 
 	"github.com/ghodss/yaml"
-	"github.com/pkg/errors"
 	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest"
+	"github.com/pkg/errors"
 )
 
 const TsdbBenchIngestConfig = "TSDB_BENCH_INGEST_CONFIG"

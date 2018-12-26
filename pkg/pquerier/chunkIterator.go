@@ -3,11 +3,11 @@ package pquerier
 import (
 	"strings"
 
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/pkg/errors"
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 // Chunk-list series iterator

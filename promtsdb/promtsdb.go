@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
+	"github.com/gtopper/v3io-tsdb/pkg/appender"
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/pquerier"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/pkg/errors"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/storage"
 	"github.com/v3io/v3io-go-http"
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
-	"github.com/v3io/v3io-tsdb/pkg/appender"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/pquerier"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type V3ioPromAdapter struct {

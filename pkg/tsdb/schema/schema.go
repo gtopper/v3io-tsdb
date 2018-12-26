@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
 	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
+	"github.com/pkg/errors"
 )
 
 const (

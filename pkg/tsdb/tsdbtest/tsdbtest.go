@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/v3io/v3io-tsdb/internal/pkg/performance"
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
+	"github.com/gtopper/v3io-tsdb/internal/pkg/performance"
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
 	"github.com/v3io/v3io-tsdb/pkg/config"
-	. "github.com/v3io/v3io-tsdb/pkg/tsdb"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest/testutils"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
+	. "github.com/gtopper/v3io-tsdb/pkg/tsdb"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest/testutils"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 )
 
 const MinuteInMillis = 60 * 1000

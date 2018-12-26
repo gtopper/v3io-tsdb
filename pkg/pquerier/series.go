@@ -3,10 +3,10 @@ package pquerier
 import (
 	"math"
 
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
 	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 )
 
 func NewDataFrameColumnSeries(indexColumn, dataColumn, countColumn Column, labels utils.Labels, hash uint64, showAggregateLabel bool, encoding chunkenc.Encoding) *DataFrameColumnSeries {

@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/v3io/v3io-tsdb/pkg/config"
 	"github.com/pkg/errors"
 	"github.com/rcrowley/go-metrics"
-	"github.com/v3io/v3io-tsdb/pkg/config"
 )
 
 const (

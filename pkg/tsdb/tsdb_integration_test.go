@@ -27,10 +27,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/stretchr/testify/suite"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type testTsdbSuite struct {

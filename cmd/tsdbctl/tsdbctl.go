@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/v3io/v3io-tsdb/pkg/tsdbctl"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdbctl"
 )
 
 func main() {

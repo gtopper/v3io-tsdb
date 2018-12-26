@@ -25,11 +25,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/v3io/v3io-tsdb/pkg/config"
 	"github.com/nuclio/logger"
 	"github.com/nuclio/zap"
 	"github.com/pkg/errors"
 	"github.com/v3io/v3io-go-http"
-	"github.com/v3io/v3io-tsdb/pkg/config"
 )
 
 const defaultHttpTimeout = 30 * time.Second

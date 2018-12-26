@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/schema"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/schema"
 )
 
 func CreateSchema(t testing.TB, aggregates string) *config.Schema {

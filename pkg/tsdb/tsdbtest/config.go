@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/pkg/errors"
 )
 
 const TsdbDefaultTestConfigPath = "testdata"
-const relativeProjectPath = "src/github.com/v3io/v3io-tsdb"
+const relativeProjectPath = "src/github.com/gtopper/v3io-tsdb"
 
 /*
 This method will try and load the configuration file from several locations by the following order:

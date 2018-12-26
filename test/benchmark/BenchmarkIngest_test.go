@@ -8,13 +8,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gtopper/v3io-tsdb/internal/pkg/performance"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest/testutils"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
+	"github.com/gtopper/v3io-tsdb/test/benchmark/common"
 	"github.com/pkg/errors"
-	"github.com/v3io/v3io-tsdb/internal/pkg/performance"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest/testutils"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
-	"github.com/v3io/v3io-tsdb/test/benchmark/common"
 )
 
 const metricNamePrefix = "Name_"

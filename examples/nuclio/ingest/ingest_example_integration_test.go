@@ -7,8 +7,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest"
 	"github.com/nuclio/nuclio-test-go"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest"
 )
 
 func TestIngestIntegration(t *testing.T) {

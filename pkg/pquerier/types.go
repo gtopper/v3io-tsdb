@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
 )
 
 // data and metadata passed to the query processor workers via a channel

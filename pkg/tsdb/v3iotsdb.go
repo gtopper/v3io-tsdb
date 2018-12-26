@@ -31,16 +31,16 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gtopper/v3io-tsdb/pkg/appender"
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/partmgr"
+	"github.com/gtopper/v3io-tsdb/pkg/pquerier"
+	"github.com/gtopper/v3io-tsdb/pkg/querier"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/schema"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/pkg/errors"
 	"github.com/v3io/v3io-go-http"
-	"github.com/v3io/v3io-tsdb/pkg/appender"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/partmgr"
-	"github.com/v3io/v3io-tsdb/pkg/pquerier"
-	"github.com/v3io/v3io-tsdb/pkg/querier"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/schema"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type V3ioAdapter struct {

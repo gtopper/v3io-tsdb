@@ -3,8 +3,8 @@ package querier
 import (
 	"sort"
 
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 )
 
 func NewSetSorter(set utils.SeriesSet) (utils.SeriesSet, error) {

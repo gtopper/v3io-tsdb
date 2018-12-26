@@ -28,14 +28,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gtopper/v3io-tsdb/internal/pkg/performance"
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb"
+	"github.com/gtopper/v3io-tsdb/pkg/tsdb/tsdbtest"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/stretchr/testify/assert"
-	"github.com/v3io/v3io-tsdb/internal/pkg/performance"
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb"
-	"github.com/v3io/v3io-tsdb/pkg/tsdb/tsdbtest"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type TestConfig struct {

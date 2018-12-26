@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/pkg/errors"
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type textFormatter struct {

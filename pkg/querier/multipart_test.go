@@ -3,8 +3,8 @@ package querier
 import (
 	"testing"
 
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/stretchr/testify/suite"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type testIterSortMergerSuite struct {

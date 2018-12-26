@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	"github.com/cespare/xxhash"
-	"github.com/pkg/errors"
 	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/pkg/errors"
 )
 
 const sep = '\xff'

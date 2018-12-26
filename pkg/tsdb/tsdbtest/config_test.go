@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/stretchr/testify/assert"
 )
 
 func createTestConfig(t *testing.T, path string) {

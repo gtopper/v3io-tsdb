@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 func TestAggregates(t *testing.T) {

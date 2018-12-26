@@ -1,6 +1,6 @@
 package utils
 
-import "github.com/v3io/v3io-tsdb/pkg/chunkenc"
+import "github.com/gtopper/v3io-tsdb/pkg/chunkenc"
 
 // SeriesSet contains a set of series.
 type SeriesSet interface {

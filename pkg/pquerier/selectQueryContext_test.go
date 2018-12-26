@@ -5,8 +5,8 @@ package pquerier
 import (
 	"testing"
 
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
 	"github.com/stretchr/testify/assert"
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
 )
 
 func TestCreateColumnSpecs(t *testing.T) {

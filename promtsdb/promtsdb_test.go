@@ -25,11 +25,11 @@ package promtsdb
 import (
 	"testing"
 
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/stretchr/testify/suite"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 type testPromTsdbSuite struct {

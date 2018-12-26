@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/v3io/v3io-tsdb/pkg/utils"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 )
 
 type Aggregate interface {

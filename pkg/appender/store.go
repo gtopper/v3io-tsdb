@@ -27,14 +27,14 @@ import (
 	"sort"
 	"time"
 
+	"github.com/gtopper/v3io-tsdb/internal/pkg/performance"
+	"github.com/gtopper/v3io-tsdb/pkg/aggregate"
+	"github.com/gtopper/v3io-tsdb/pkg/chunkenc"
+	"github.com/v3io/v3io-tsdb/pkg/config"
+	"github.com/gtopper/v3io-tsdb/pkg/partmgr"
+	"github.com/gtopper/v3io-tsdb/pkg/utils"
 	"github.com/nuclio/logger"
 	"github.com/v3io/v3io-go-http"
-	"github.com/v3io/v3io-tsdb/internal/pkg/performance"
-	"github.com/v3io/v3io-tsdb/pkg/aggregate"
-	"github.com/v3io/v3io-tsdb/pkg/chunkenc"
-	"github.com/v3io/v3io-tsdb/pkg/config"
-	"github.com/v3io/v3io-tsdb/pkg/partmgr"
-	"github.com/v3io/v3io-tsdb/pkg/utils"
 )
 
 // TODO: make it configurable
