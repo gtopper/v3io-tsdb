@@ -155,47 +155,6 @@ func NewContainerFromEnv(logger logger.Logger) (*v3io.Container, error) {
 	return container, nil
 }
 
-func NewLogger(underlying interface{}) logger.Logger {
-	loggerInstance := underlying.(logger.Logger)
-	return loggerWrapper{loggerInstance}
-}
-
-type loggerWrapper struct {
-	underlying logger.Logger
-}
-
-func (l loggerWrapper) Error(format interface{}, vars ...interface{}) {
-	l.Error(format, vars)
-}
-func (l loggerWrapper) Warn(format interface{}, vars ...interface{}) {
-	l.Warn(format, vars)
-}
-func (l loggerWrapper) Info(format interface{}, vars ...interface{}) {
-	l.Info(format, vars)
-}
-func (l loggerWrapper) Debug(format interface{}, vars ...interface{}) {
-	l.Debug(format, vars)
-}
-func (l loggerWrapper) ErrorWith(format interface{}, vars ...interface{}) {
-	l.ErrorWith(format, vars)
-}
-func (l loggerWrapper) WarnWith(format interface{}, vars ...interface{}) {
-	l.WarnWith(format, vars)
-}
-func (l loggerWrapper) InfoWith(format interface{}, vars ...interface{}) {
-	l.InfoWith(format, vars)
-}
-func (l loggerWrapper) DebugWith(format interface{}, vars ...interface{}) {
-	l.DebugWith(format, vars)
-}
-func (l loggerWrapper) Flush() {
-	l.Flush()
-}
-func (l loggerWrapper) GetChild(name string) logger.Logger {
-	loggerInstance, _ := l.GetChild(name).(logger.Logger)
-	return loggerWrapper{loggerInstance}
-}
-
 func (a *V3ioAdapter) GetSchema() *config.Schema {
 	return a.partitionMngr.GetConfig()
 }
