@@ -25,8 +25,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"os"
 	pathUtil "path"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/nuclio/logger"
@@ -106,6 +108,88 @@ func NewV3ioAdapter(cfg *config.V3ioConfig, container *v3io.Container, logger lo
 	err = newV3ioAdapter.connect()
 
 	return &newV3ioAdapter, err
+}
+
+func NewContainer(v3ioUrl string, numWorkers int, username string, password string, containerName string, logger logger.Logger) (*v3io.Container, error) {
+	ctx, err := v3io.NewContext(logger, v3ioUrl, numWorkers)
+	if err != nil {
+		return nil, err
+	}
+	session, err := ctx.NewSession(username, password, "")
+	if err != nil {
+		return nil, err
+	}
+	if containerName == "" {
+		containerName = "bigdata"
+	}
+	container, err := session.NewContainer(containerName)
+	if err != nil {
+		return nil, err
+	}
+	return container, nil
+}
+
+func NewContainerFromEnv(logger logger.Logger) (*v3io.Container, error) {
+	v3ioUrl := os.Getenv("V3IO_URL")
+	numWorkers, err := strconv.Atoi(os.Getenv("V3IO_NUM_WORKERS"))
+	if err != nil {
+		return nil, err
+	}
+	username := os.Getenv("V3IO_USERNAME")
+	password := os.Getenv("V3IO_PASSWORD")
+	containerName := os.Getenv("V3IO_CONTAINER")
+	if containerName == "" {
+		containerName = "bigdata"
+	}
+	container, err := NewContainer(v3ioUrl, numWorkers, username, password, containerName, logger)
+	if err != nil {
+		return nil, err
+	}
+	return container, nil
+}
+
+func NewLogger(underlying interface{}) logger.Logger {
+	loggerInstance, ok := underlying.(logger.Logger)
+	if !ok {
+		return nil
+	}
+	return loggerWrapper{&loggerInstance}
+}
+
+type loggerWrapper struct {
+	underlying *logger.Logger
+}
+
+func (l loggerWrapper) Error(format interface{}, vars ...interface{}) {
+	l.Error(format, vars)
+}
+func (l loggerWrapper) Warn(format interface{}, vars ...interface{}) {
+	l.Warn(format, vars)
+}
+func (l loggerWrapper) Info(format interface{}, vars ...interface{}) {
+	l.Info(format, vars)
+}
+func (l loggerWrapper) Debug(format interface{}, vars ...interface{}) {
+	l.Debug(format, vars)
+}
+func (l loggerWrapper) ErrorWith(format interface{}, vars ...interface{}) {
+	l.ErrorWith(format, vars)
+}
+func (l loggerWrapper) WarnWith(format interface{}, vars ...interface{}) {
+	l.WarnWith(format, vars)
+}
+func (l loggerWrapper) InfoWith(format interface{}, vars ...interface{}) {
+	l.InfoWith(format, vars)
+}
+func (l loggerWrapper) DebugWith(format interface{}, vars ...interface{}) {
+	l.DebugWith(format, vars)
+}
+func (l loggerWrapper) Flush() {
+	l.Flush()
+}
+func (l loggerWrapper) GetChild(name string) logger.Logger {
+	loggerInstance, _ := l.GetChild(name).(logger.Logger)
+	return loggerWrapper{&loggerInstance}
 }
 
 func (a *V3ioAdapter) GetSchema() *config.Schema {
