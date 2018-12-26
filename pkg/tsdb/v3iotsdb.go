@@ -32,7 +32,6 @@ import (
 	"time"
 
 	"github.com/gtopper/v3io-tsdb/pkg/appender"
-	"github.com/v3io/v3io-tsdb/pkg/config"
 	"github.com/gtopper/v3io-tsdb/pkg/partmgr"
 	"github.com/gtopper/v3io-tsdb/pkg/pquerier"
 	"github.com/gtopper/v3io-tsdb/pkg/querier"
@@ -41,6 +40,7 @@ import (
 	"github.com/nuclio/logger"
 	"github.com/pkg/errors"
 	"github.com/v3io/v3io-go-http"
+	"github.com/v3io/v3io-tsdb/pkg/config"
 )
 
 type V3ioAdapter struct {
@@ -131,9 +131,16 @@ func NewContainer(v3ioUrl string, numWorkers int, username string, password stri
 
 func NewContainerFromEnv(logger logger.Logger) (*v3io.Container, error) {
 	v3ioUrl := os.Getenv("V3IO_URL")
-	numWorkers, err := strconv.Atoi(os.Getenv("V3IO_NUM_WORKERS"))
-	if err != nil {
-		return nil, err
+	numWorkersStr := os.Getenv("V3IO_NUM_WORKERS")
+	var numWorkers int
+	var err error
+	if len(numWorkersStr) > 0 {
+		numWorkers, err = strconv.Atoi(numWorkersStr)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		numWorkers = 8
 	}
 	username := os.Getenv("V3IO_USERNAME")
 	password := os.Getenv("V3IO_PASSWORD")
@@ -149,15 +156,12 @@ func NewContainerFromEnv(logger logger.Logger) (*v3io.Container, error) {
 }
 
 func NewLogger(underlying interface{}) logger.Logger {
-	loggerInstance, ok := underlying.(logger.Logger)
-	if !ok {
-		return nil
-	}
-	return loggerWrapper{&loggerInstance}
+	loggerInstance := underlying.(logger.Logger)
+	return loggerWrapper{loggerInstance}
 }
 
 type loggerWrapper struct {
-	underlying *logger.Logger
+	underlying logger.Logger
 }
 
 func (l loggerWrapper) Error(format interface{}, vars ...interface{}) {
@@ -189,7 +193,7 @@ func (l loggerWrapper) Flush() {
 }
 func (l loggerWrapper) GetChild(name string) logger.Logger {
 	loggerInstance, _ := l.GetChild(name).(logger.Logger)
-	return loggerWrapper{&loggerInstance}
+	return loggerWrapper{loggerInstance}
 }
 
 func (a *V3ioAdapter) GetSchema() *config.Schema {
