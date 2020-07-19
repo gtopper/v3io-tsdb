@@ -67,6 +67,7 @@ func (mc *MetricsCache) metricFeed(index int) {
 					if len(mc.asyncAppendChan) == 0 {
 						gotCompletion = true
 						if completeChan != nil {
+							fmt.Printf("*** Sending completeChan <- 0 after last update\n")
 							completeChan <- 0
 							gotData = false
 							potentialCompletion = false
@@ -85,8 +86,10 @@ func (mc *MetricsCache) metricFeed(index int) {
 						// Handle update completion requests (metric == nil)
 						completeChan = app.resp
 						length := mc.metricQueue.Length()
+						fmt.Printf("*** Got nil metric (from WaitForCompletion), length=%d, len(mc.asyncAppendChan)=%d, gotCompletion=%v, potentialCompletion=%v, gotData=%v\n", length, len(mc.asyncAppendChan), gotCompletion, potentialCompletion, gotData)
 						if length == 0 && len(mc.asyncAppendChan) == 0 {
 							if gotCompletion || (potentialCompletion && gotData) {
+								fmt.Printf("*** Sending completeChan <- 0 immediately\n")
 								completeChan <- 0
 								gotCompletion = false
 								gotData = false
@@ -237,6 +240,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 
 	if metric.getState() == storeStatePreGet {
 		sent, err = metric.store.getChunksState(mc, metric)
+		fmt.Printf("*** metric.getState()=storeStatePreGet, sent=%v\n", sent)
 		if err != nil {
 			// Count errors
 			mc.performanceReporter.IncrementCounter("GetChunksStateError", 1)
@@ -249,6 +253,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 
 	} else {
 		sent, err = metric.store.writeChunks(mc, metric)
+		fmt.Printf("*** metric.getState()=%v, sent=%v\n", metric.getState(), sent)
 		if err != nil {
 			// Count errors
 			mc.performanceReporter.IncrementCounter("WriteChunksError", 1)
@@ -258,6 +263,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 		} else if sent {
 			metric.setState(storeStateUpdate)
 		}
+		fmt.Printf("*** sent=%v, metric.store.samplesQueueLength()=%v, mc.metricQueue.length()=%v\n", sent, metric.store.samplesQueueLength(), mc.metricQueue.length())
 		if !sent {
 			if metric.store.samplesQueueLength() == 0 {
 				metric.setState(storeStateReady)
@@ -363,6 +369,7 @@ func (mc *MetricsCache) handleResponse(metric *MetricState, resp *v3io.Response,
 		}
 
 	} else if metric.store.samplesQueueLength() > 0 {
+		fmt.Printf("*** mc.metricQueue.Push(metric) because metric.store.samplesQueueLength() (%d) > 0\n", metric.store.samplesQueueLength())
 		mc.metricQueue.Push(metric)
 		metric.setState(storeStateUpdate)
 	}
