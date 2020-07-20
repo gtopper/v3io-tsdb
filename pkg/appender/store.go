@@ -399,10 +399,10 @@ func (cs *chunkStore) writeChunks(mc *MetricsCache, metric *MetricState) (hasPen
 			// Leave pending unprocessed or from newer partitions
 			cs.pending = cs.pending[pendingSampleIndex:]
 		}
-
 		if pendingSamplesCount == 0 || expr == "" {
 			if len(cs.pending) > 0 {
-				mc.logger.Info("***%d*** mc.metricQueue.Push(metric) because pendingSamplesCount=%d, expr=%s, len(cs.pending)=%d", mc.id, pendingSamplesCount, expr, len(cs.pending))
+				name, _, hash := metric.Lset.GetKey()
+				mc.logger.Info("***%d*** mc.metricQueue.Push(metric) because pendingSamplesCount=%d, expr=%s, len(cs.pending)=%d, metric_name=%s, metric_hash=%d", mc.id, pendingSamplesCount, expr, len(cs.pending), name, hash)
 				mc.metricQueue.Push(metric)
 			}
 			hasPendingUpdates = false
