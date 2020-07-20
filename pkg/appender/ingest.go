@@ -103,8 +103,8 @@ func (mc *MetricsCache) metricFeed(index int) {
 						gotData = true
 						metric := app.metric
 						metric.Lock()
-
-						mc.logger.Info("***%d*** Got data point (%v, %v), metric.isTimeInvalid(app.t)=%v", mc.id, app.t, app.v, metric.isTimeInvalid(app.t))
+						name, _, hash := metric.Lset.GetKey()
+						mc.logger.Info("***%d*** Got data point app.t=%v, app.v=%v, metric_name=%s, metric_hash=%d, metric.isTimeInvalid(app.t)=%v", mc.id, app.t, app.v, name, hash, metric.isTimeInvalid(app.t))
 						if metric.isTimeInvalid(app.t) {
 							metric.store.Append(app.t, app.v)
 							numPushed++
@@ -255,7 +255,8 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 
 	} else {
 		sent, err = metric.store.writeChunks(mc, metric)
-		mc.logger.Info("***%d*** metric.getState()=%v, sent=%v", mc.id, metric.getState(), sent)
+		name, _, hash := metric.Lset.GetKey()
+		mc.logger.Info("***%d*** metric.getState()=%v, sent=%v, metric_name=%s, metric_hash=%d", mc.id, metric.getState(), sent, name, hash)
 		if err != nil {
 			// Count errors
 			mc.performanceReporter.IncrementCounter("WriteChunksError", 1)
@@ -265,7 +266,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 		} else if sent {
 			metric.setState(storeStateUpdate)
 		}
-		mc.logger.Info("***%d*** sent=%v, metric.store.samplesQueueLength()=%v, mc.metricQueue.length()=%v", mc.id, sent, metric.store.samplesQueueLength(), mc.metricQueue.length())
+		mc.logger.Info("***%d*** sent=%v, metric.store.samplesQueueLength()=%v, mc.metricQueue.length()=%v, metric_name=%s, metric_hash=%d", mc.id, sent, metric.store.samplesQueueLength(), mc.metricQueue.length(), name, hash)
 		if !sent {
 			if metric.store.samplesQueueLength() == 0 {
 				metric.setState(storeStateReady)
@@ -371,7 +372,8 @@ func (mc *MetricsCache) handleResponse(metric *MetricState, resp *v3io.Response,
 		}
 
 	} else if metric.store.samplesQueueLength() > 0 {
-		mc.logger.Info("***%d*** mc.metricQueue.Push(metric) because metric.store.samplesQueueLength() (%d) > 0", mc.id, metric.store.samplesQueueLength())
+		name, _, hash := metric.Lset.GetKey()
+		mc.logger.Info("***%d*** mc.metricQueue.Push(metric) because metric.store.samplesQueueLength() (%d) > 0, metric_name=%s, metric_hash=%d", mc.id, metric.store.samplesQueueLength(), name, hash)
 		mc.metricQueue.Push(metric)
 		metric.setState(storeStateUpdate)
 	}
