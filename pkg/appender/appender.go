@@ -22,6 +22,7 @@ package appender
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
 
@@ -134,12 +135,15 @@ type MetricsCache struct {
 	performanceReporter *performance.MetricReporter
 
 	stopChan chan int
+
+	id int64
 }
 
 func NewMetricsCache(container v3io.Container, logger logger.Logger, cfg *config.V3ioConfig,
 	partMngr *partmgr.PartitionManager) *MetricsCache {
 
 	newCache := MetricsCache{container: container, logger: logger, cfg: cfg, partitionMngr: partMngr}
+	newCache.id = rand.Int63()
 	newCache.cacheMetricMap = map[cacheKey]*MetricState{}
 	newCache.cacheRefMap = map[uint64]*MetricState{}
 
@@ -346,7 +350,7 @@ func (mc *MetricsCache) WaitForCompletion(timeout time.Duration) (int, error) {
 			return
 		case <-time.After(maxWaitTime):
 			resultCount = 0
-			err = errors.Errorf("***%p*** The operation timed out after %.2f seconds.", mc, maxWaitTime.Seconds())
+			err = errors.Errorf("***%d*** The operation timed out after %.2f seconds.", mc.id, maxWaitTime.Seconds())
 			return
 		}
 	})

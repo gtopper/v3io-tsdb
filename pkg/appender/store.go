@@ -402,7 +402,7 @@ func (cs *chunkStore) writeChunks(mc *MetricsCache, metric *MetricState) (hasPen
 
 		if pendingSamplesCount == 0 || expr == "" {
 			if len(cs.pending) > 0 {
-				fmt.Printf("***%p*** mc.metricQueue.Push(metric) because pendingSamplesCount=%d, expr=%s, len(cs.pending)=%d\n", mc, pendingSamplesCount, expr, len(cs.pending))
+				mc.logger.Info("***%d*** mc.metricQueue.Push(metric) because pendingSamplesCount=%d, expr=%s, len(cs.pending)=%d", mc.id, pendingSamplesCount, expr, len(cs.pending))
 				mc.metricQueue.Push(metric)
 			}
 			hasPendingUpdates = false
