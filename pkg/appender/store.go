@@ -156,6 +156,7 @@ func (cs *chunkStore) getChunksState(mc *MetricsCache, metric *MetricState) (boo
 	getInput := v3io.GetItemInput{
 		Path: path, AttributeNames: []string{config.MaxTimeAttrName}}
 
+	mc.requestsInFlight++
 	request, err := mc.container.GetItem(&getInput, metric, mc.responseChan)
 	if err != nil {
 		mc.logger.ErrorWith("Failed to send a GetItem request to the TSDB", "metric", metric.key, "err", err)
@@ -186,6 +187,7 @@ func (cs *chunkStore) processGetResp(mc *MetricsCache, metric *MetricState, resp
 				path := filepath.Join(mc.cfg.TablePath, config.NamesDirectory, metric.name)
 				putInput := v3io.PutItemInput{Path: path, Attributes: map[string]interface{}{}}
 
+				mc.requestsInFlight++
 				request, err := mc.container.PutItem(&putInput, metric, mc.nameUpdateChan)
 				if err != nil {
 					cs.performanceReporter.IncrementCounter("PutNameError", 1)
@@ -440,6 +442,7 @@ func (cs *chunkStore) writeChunks(mc *MetricsCache, metric *MetricState) (hasPen
 		}
 		expr += fmt.Sprintf("%v=%d;", config.MaxTimeAttrName, cs.maxTime) // TODO: use max() expr
 		path := partition.GetMetricPath(metric.name, metric.hash, cs.labelNames, cs.isAggr())
+		mc.requestsInFlight++
 		request, err := mc.container.UpdateItem(
 			&v3io.UpdateItemInput{Path: path, Expression: &expr, Condition: conditionExpr}, metric, mc.responseChan)
 		if err != nil {
