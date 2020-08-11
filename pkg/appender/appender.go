@@ -317,6 +317,7 @@ func (mc *MetricsCache) Close() {
 }
 
 func (mc *MetricsCache) WaitForCompletion(timeout time.Duration) (int, error) {
+	time.Sleep(time.Second * 3)
 	waitChan := make(chan int, 2)
 	mc.asyncAppendChan <- &asyncAppend{metric: nil, t: 0, v: 0, resp: waitChan}
 
