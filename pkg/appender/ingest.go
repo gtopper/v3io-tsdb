@@ -64,6 +64,7 @@ func (mc *MetricsCache) metricFeed(index int) {
 				case 0:
 					potentialCompletion = true
 					if completeChan != nil {
+						mc.logger.Info("Terminating after update...")
 						completeChan <- 0
 					}
 				case 1:
@@ -79,6 +80,7 @@ func (mc *MetricsCache) metricFeed(index int) {
 						// Handle update completion requests (metric == nil)
 						completeChan = app.resp
 						if potentialCompletion {
+							mc.logger.Info("Terminating after WaitForCompletion...")
 							completeChan <- 0
 						}
 					} else {
