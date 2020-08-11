@@ -118,8 +118,8 @@ type MetricsCache struct {
 	updatesComplete chan int
 	newUpdates      chan int
 
-	outstandingUpdates int
-	requestsInFlight   int
+	outstandingUpdates int64
+	requestsInFlight   int64
 
 	lastMetric uint64
 

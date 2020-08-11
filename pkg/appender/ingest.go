@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"sync/atomic"
 	"time"
 
 	"github.com/pkg/errors"
@@ -118,7 +119,7 @@ func (mc *MetricsCache) metricFeed(index int) {
 				}
 				// Notify the update loop that there are new metrics to process
 				if newMetrics > 0 {
-					mc.outstandingUpdates++
+					atomic.AddInt64(&mc.outstandingUpdates, 1)
 					mc.newUpdates <- newMetrics
 				}
 
@@ -160,8 +161,9 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 					}
 				}
 
-				mc.outstandingUpdates--
+				atomic.AddInt64(&mc.outstandingUpdates, -1)
 
+				mc.logger.Info("newUpdates: mc.requestsInFlight (=%v) == 0 && len(mc.newUpdates) (=%v) == 0", mc.requestsInFlight, len(mc.newUpdates))
 				if mc.requestsInFlight == 0 && len(mc.newUpdates) == 0 {
 					mc.logger.Debug("Complete new update cycle - in-flight %d.\n", mc.updatesInFlight)
 					mc.updatesComplete <- 0
@@ -185,7 +187,8 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 					if i < mc.cfg.BatchSize {
 						select {
 						case resp = <-mc.responseChan:
-							mc.requestsInFlight--
+							atomic.AddInt64(&mc.requestsInFlight, -1)
+							mc.logger.Info("mc.requestsInFlight decremented to %v", mc.requestsInFlight)
 						default:
 							break inLoop
 						}
@@ -204,10 +207,13 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 					}
 				}
 
-				mc.requestsInFlight--
+				atomic.AddInt64(&mc.requestsInFlight, -1)
+				mc.logger.Info("mc.requestsInFlight decremented to %v", mc.requestsInFlight)
+
+				mc.logger.Info("responseChan: mc.requestsInFlight (=%v) == 0 && len(mc.newUpdates) (=%v) == 0 && mc.outstandingUpdates (=%v) == 0", mc.requestsInFlight, len(mc.newUpdates), mc.outstandingUpdates)
 
 				// Notify the metric feeder when all in-flight tasks are done
-				if mc.requestsInFlight == 0 && len(mc.newUpdates) == 0 && mc.outstandingUpdates == 0 {
+				if atomic.LoadInt64(&mc.requestsInFlight) == 0 && atomic.LoadInt64(&mc.outstandingUpdates) == 0 {
 					mc.logger.Debug("Return to feed. Metric queue length: %d", mc.metricQueue.Length())
 					mc.updatesComplete <- 0
 				}
@@ -253,7 +259,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 				metric.setState(storeStateReady)
 			} else {
 				if mc.metricQueue.length() > 0 {
-					mc.outstandingUpdates++
+					atomic.AddInt64(&mc.outstandingUpdates, 1)
 					mc.newUpdates <- mc.metricQueue.length()
 				}
 			}
@@ -386,6 +392,17 @@ func (mc *MetricsCache) nameUpdateRespLoop() {
 				}
 
 				resp.Release()
+
+				atomic.AddInt64(&mc.requestsInFlight, -1)
+
+				mc.logger.Info("mc.requestsInFlight decremented to %v", mc.requestsInFlight)
+
+				mc.logger.Info("nameUpdateChan: mc.requestsInFlight (=%v) == 0 && len(mc.newUpdates) (=%v) == 0 && mc.outstandingUpdates (=%v) == 0", mc.requestsInFlight, len(mc.newUpdates), mc.outstandingUpdates)
+
+				if atomic.LoadInt64(&mc.requestsInFlight) == 0 && atomic.LoadInt64(&mc.outstandingUpdates) == 0 {
+					mc.logger.Debug("Return to feed. Metric queue length: %d", mc.metricQueue.Length())
+					mc.updatesComplete <- 0
+				}
 			}
 		}
 	}()
