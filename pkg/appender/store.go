@@ -405,6 +405,8 @@ func (cs *chunkStore) writeChunks(mc *MetricsCache, metric *MetricState) (hasPen
 			cs.pending = cs.pending[pendingSampleIndex:]
 		}
 
+		cs.logger.Info("pendingSamplesCount=%v", pendingSamplesCount)
+
 		if pendingSamplesCount == 0 || expr == "" {
 			if len(cs.pending) > 0 {
 				mc.metricQueue.Push(metric)
