@@ -165,7 +165,6 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 
 				atomic.AddInt64(&mc.outstandingUpdates, -1)
 
-				mc.logger.Info("newUpdates: mc.requestsInFlight (=%v) == 0 && len(mc.newUpdates) (=%v) == 0", mc.requestsInFlight, len(mc.newUpdates))
 				if mc.requestsInFlight == 0 && len(mc.newUpdates) == 0 {
 					mc.logger.Debug("Complete new update cycle - in-flight %d.\n", mc.updatesInFlight)
 					mc.updatesComplete <- 0
@@ -190,7 +189,6 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 						select {
 						case resp = <-mc.responseChan:
 							atomic.AddInt64(&mc.requestsInFlight, -1)
-							mc.logger.Info("mc.requestsInFlight decremented to %v", mc.requestsInFlight)
 						default:
 							break inLoop
 						}
@@ -210,9 +208,6 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 				}
 
 				atomic.AddInt64(&mc.requestsInFlight, -1)
-				mc.logger.Info("mc.requestsInFlight decremented to %v", mc.requestsInFlight)
-
-				mc.logger.Info("responseChan: mc.requestsInFlight (=%v) == 0 && len(mc.newUpdates) (=%v) == 0 && mc.outstandingUpdates (=%v) == 0", mc.requestsInFlight, len(mc.newUpdates), mc.outstandingUpdates)
 
 				// Notify the metric feeder when all in-flight tasks are done
 				if atomic.LoadInt64(&mc.requestsInFlight) == 0 && atomic.LoadInt64(&mc.outstandingUpdates) == 0 {
@@ -396,10 +391,6 @@ func (mc *MetricsCache) nameUpdateRespLoop() {
 				resp.Release()
 
 				atomic.AddInt64(&mc.requestsInFlight, -1)
-
-				mc.logger.Info("mc.requestsInFlight decremented to %v", mc.requestsInFlight)
-
-				mc.logger.Info("nameUpdateChan: mc.requestsInFlight (=%v) == 0 && len(mc.newUpdates) (=%v) == 0 && mc.outstandingUpdates (=%v) == 0", mc.requestsInFlight, len(mc.newUpdates), mc.outstandingUpdates)
 
 				if atomic.LoadInt64(&mc.requestsInFlight) == 0 && atomic.LoadInt64(&mc.outstandingUpdates) == 0 {
 					mc.logger.Debug("Return to feed. Metric queue length: %d", mc.metricQueue.Length())
