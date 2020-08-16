@@ -246,6 +246,8 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 				}
 			}
 		}
+	} else {
+		mc.metricQueue.Push(metric)
 	}
 
 	if sent {
