@@ -71,14 +71,16 @@ func (mc *MetricsCache) metricFeed(index int) {
 							"inFlight", inFlight,
 							"outstanding", outstanding)
 
-						switch len(mc.asyncAppendChan) {
-						case 0:
-							potentialCompletion = true
-							if completeChan != nil {
-								completeChan <- 0
+						if outstanding == 0 {
+							switch len(mc.asyncAppendChan) {
+							case 0:
+								potentialCompletion = true
+								if completeChan != nil {
+									completeChan <- 0
+								}
+							case 1:
+								potentialCompletion = true
 							}
-						case 1:
-							potentialCompletion = true
 						}
 						if i < mc.cfg.BatchSize {
 							select {
