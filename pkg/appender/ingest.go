@@ -182,6 +182,7 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 							"state", metric.state,
 							"shouldGetState", metric.shouldGetState,
 							"name", metric.name,
+							"outstandingUpdates", atomic.LoadInt64(&mc.outstandingUpdates),
 							"path", mc.partitionMngr.Path())
 						mc.postMetricUpdates(metric)
 					}
