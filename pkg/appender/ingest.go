@@ -71,7 +71,7 @@ func (mc *MetricsCache) metricFeed(index int) {
 							"inFlight", inFlight,
 							"outstanding", outstanding)
 
-						if outstanding == 0 {
+						if outstanding == 0 && inFlight == 0 {
 							switch len(mc.asyncAppendChan) {
 							case 0:
 								potentialCompletion = true
