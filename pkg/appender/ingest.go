@@ -117,10 +117,17 @@ func (mc *MetricsCache) metricFeed(index int) {
 				// Notify the update loop that there are new metrics to process
 				if newMetrics > 0 {
 					atomic.AddInt64(&mc.outstandingUpdates, 1)
+					mc.logger.Warn("mc.newUpdates <- newMetrics")
 					mc.newUpdates <- newMetrics
 				} else if gotCompletion {
 					inFlight := atomic.LoadInt64(&mc.requestsInFlight)
 					outstanding := atomic.LoadInt64(&mc.outstandingUpdates)
+					mc.logger.WarnWith("got updatesCompleted",
+						"len(mc.asyncAppendChan)", len(mc.asyncAppendChan),
+						"has completion chan", completeChan != nil,
+						"inFlight", inFlight,
+						"outstanding", outstanding)
+
 					if outstanding == 0 && inFlight == 0 {
 						switch len(mc.asyncAppendChan) {
 						case 0:
@@ -170,6 +177,8 @@ func (mc *MetricsCache) metricsUpdateLoop(index int) {
 							"state", metric.state,
 							"shouldGetState", metric.shouldGetState,
 							"name", metric.name,
+							"outstandingUpdates", atomic.LoadInt64(&mc.outstandingUpdates),
+							"requestsInFlight", atomic.LoadInt64(&mc.requestsInFlight),
 							"path", mc.partitionMngr.Path())
 						mc.postMetricUpdates(metric)
 					}
@@ -293,6 +302,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 			} else {
 				if mc.metricQueue.length() > 0 {
 					atomic.AddInt64(&mc.outstandingUpdates, 1)
+					mc.logger.Warn("mc.newUpdates <- mc.metricQueue.length()")
 					mc.newUpdates <- mc.metricQueue.length()
 				}
 			}
