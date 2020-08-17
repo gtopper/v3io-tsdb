@@ -59,36 +59,12 @@ func (mc *MetricsCache) metricFeed(index int) {
 				newMetrics := 0
 				dataQueued := 0
 				numPushed := 0
+				gotCompletion := false
 			inLoop:
 				for i := 0; i <= mc.cfg.BatchSize; i++ {
 					// Handle completion notifications from the update loop
 					if app.isCompletion {
-						inFlight := atomic.LoadInt64(&mc.requestsInFlight)
-						outstanding := atomic.LoadInt64(&mc.outstandingUpdates)
-						mc.logger.WarnWith("got updatesCompleted",
-							"len(mc.asyncAppendChan)", len(mc.asyncAppendChan),
-							"has completion chan", completeChan != nil,
-							"inFlight", inFlight,
-							"outstanding", outstanding)
-
-						if outstanding == 0 && inFlight == 0 {
-							switch len(mc.asyncAppendChan) {
-							case 0:
-								potentialCompletion = true
-								if completeChan != nil {
-									completeChan <- 0
-								}
-							case 1:
-								potentialCompletion = true
-							}
-						}
-						if i < mc.cfg.BatchSize {
-							select {
-							case app = <-mc.asyncAppendChan:
-							default:
-								break inLoop
-							}
-						}
+						gotCompletion = true
 						continue
 					}
 					if app.metric == nil {
@@ -145,6 +121,26 @@ func (mc *MetricsCache) metricFeed(index int) {
 					atomic.AddInt64(&mc.outstandingUpdates, 1)
 					mc.logger.Warn("mc.newUpdates <- newMetrics")
 					mc.newUpdates <- newMetrics
+				} else if gotCompletion {
+					inFlight := atomic.LoadInt64(&mc.requestsInFlight)
+					outstanding := atomic.LoadInt64(&mc.outstandingUpdates)
+					mc.logger.WarnWith("got updatesCompleted",
+						"len(mc.asyncAppendChan)", len(mc.asyncAppendChan),
+						"has completion chan", completeChan != nil,
+						"inFlight", inFlight,
+						"outstanding", outstanding)
+
+					if outstanding == 0 && inFlight == 0 {
+						switch len(mc.asyncAppendChan) {
+						case 0:
+							potentialCompletion = true
+							if completeChan != nil {
+								completeChan <- 0
+							}
+						case 1:
+							potentialCompletion = true
+						}
+					}
 				}
 
 				// If we have too much work, stall the queue for some time
