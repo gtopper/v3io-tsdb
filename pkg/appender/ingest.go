@@ -143,6 +143,7 @@ func (mc *MetricsCache) metricFeed(index int) {
 				// Notify the update loop that there are new metrics to process
 				if newMetrics > 0 {
 					atomic.AddInt64(&mc.outstandingUpdates, 1)
+					mc.logger.Warn("mc.newUpdates <- newMetrics")
 					mc.newUpdates <- newMetrics
 				}
 
@@ -307,6 +308,7 @@ func (mc *MetricsCache) postMetricUpdates(metric *MetricState) {
 			} else {
 				if mc.metricQueue.length() > 0 {
 					atomic.AddInt64(&mc.outstandingUpdates, 1)
+					mc.logger.Warn("mc.newUpdates <- mc.metricQueue.length()")
 					mc.newUpdates <- mc.metricQueue.length()
 				}
 			}
