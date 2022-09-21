@@ -21,6 +21,7 @@ such restriction.
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -192,6 +193,9 @@ func (ic *AsyncItemsCursor) processResponse() error {
 
 	// set the cursor items and reset the item index
 	ic.items = getItemsResp.Items
+	itemsJson, err := json.Marshal(ic.items)
+	itemsJsonStr := string(itemsJson)
+	ic.logger.InfoWithCtx(ic.input.Ctx, "Got items in response", "err", err, "path", ic.input.Path, "items", itemsJsonStr)
 	ic.itemIndex = 0
 
 	conf, err := config.GetOrDefaultConfig()
